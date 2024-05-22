@@ -7,7 +7,7 @@ fun main() {
 
     do {
         for (item in scan.next().split(" ")) {
-            if (item.toBoolean()) {
+            if (!item.toBoolean()) {
                 command[i] = ""
             } else {
                 command[i] = item
@@ -33,20 +33,37 @@ fun help() {
     println("Help")
 }
 
-fun add(name: String, connection: String, phone: String) {
+fun add(name: String?, connection: String?, phone: String?): String {
     println("Add")
-    when (connection) {
-        "phone" -> if(!checkingPhone(connection)) {
-            println("Error phone")
-            return false
-        }
+    val phoneCheck: String
+    val nameCheck: String
+
+    fun String.onlyLetters() = all { it.isLetter() }
+
+    if (name!!.onlyLetters()) {
+        nameCheck = name
+    } else {
+        nameCheck = "error:$name"
     }
+
+    when (connection) {
+        "phone" -> phoneCheck = checkingPhone(phone?: "")
+        else -> phoneCheck = name
+    }
+
+    return "$nameCheck $connection $phoneCheck"
 }
 
-fun checkingPhone(phone: String): Boolean {
-    for (i in 0 until phone.length) {
-        if (phone[0] != "+" || phone[0].isDigit()) {
-            return false
+fun checkingPhone(phone: String): String {
+    for (i in 1 until phone.length) {
+        if (!phone[i].isDigit()) {
+            return "error:$phone"
+        }
+
+        if (phone[0] != '+' && !phone[0].isDigit()) {
+            return "error:$phone"
         }
     }
+
+    return phone
 }
