@@ -2,25 +2,24 @@ import java.util.Scanner
 
 fun main() {
     val scan = Scanner(System.`in`)
-    val command = arrayOfNulls<String>(4)
-    var i = 0
+    // val command: Array<String>
+    // var i = 0
 
     do {
-        for (item in scan.next().split(" ")) {
-            if (!item.toBoolean()) {
-                command[i] = ""
-            } else {
-                command[i] = item
-            }
-            i++
+        val text = scan.next()
+        val command = text.split(" ").toTypedArray()
+        command.forEach {arg ->
+            println(arg)
         }
-        i = 0
-
-        println(command[0])
+        // for (item in scan.next().split(" ")) {
+        //    command[i] = item
+        //    i++
+        // }
+        // i = 0
 
         when (command[0]) {
-            "help" -> help()
-            "add" -> add(command[1], command[2], command[3])
+            "help" -> println(help())
+            "add" -> println(add(command[1], command[2], command[3]))
         }
 
     } while (command[0] != "exit")
@@ -29,38 +28,39 @@ fun main() {
 
 }
 
-fun help() {
-    println("Help")
+fun help(): String {
+    return "Help"
 }
 
-fun add(name: String?, connection: String?, phone: String?): String {
-    println("Add")
-    val phoneCheck: String
+fun add(name: String, connection: String, phone: String): String {
+    val dataCheck: String
     val nameCheck: String
+    println("$name, $connection, $phone")
 
     fun String.onlyLetters() = all { it.isLetter() }
 
-    if (name!!.onlyLetters()) {
+    if (name.onlyLetters()) {
         nameCheck = name
     } else {
         nameCheck = "error:$name"
     }
 
     when (connection) {
-        "phone" -> phoneCheck = checkingPhone(phone?: "")
-        else -> phoneCheck = name
+        "phone" -> dataCheck = checkingPhone(phone)
+        else -> dataCheck = "str"
     }
+    println("$nameCheck $connection $dataCheck")
 
-    return "$nameCheck $connection $phoneCheck"
+    return "$nameCheck $connection $dataCheck"
 }
 
 fun checkingPhone(phone: String): String {
+    if (phone[0] != '+' && !phone[0].isDigit()) {
+        return "error:$phone"
+    }
+
     for (i in 1 until phone.length) {
         if (!phone[i].isDigit()) {
-            return "error:$phone"
-        }
-
-        if (phone[0] != '+' && !phone[0].isDigit()) {
             return "error:$phone"
         }
     }
