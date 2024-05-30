@@ -21,6 +21,8 @@ fun checkingAddCommand(command: List<String>): String {
     }
 
     if (command.size > 2 && command[2] == "email") {
+        result[2] = command[2]
+        result[3] = checkingEmail(command[3])
     }
 
     return "${result[1]} ${result[2]} ${result[3]}"
@@ -34,6 +36,38 @@ fun checkingPhone(phone: String): String {
     }
 
     return "Errorphone" 
+}
+
+fun checkingEmail(email: String): String {
+    if ('@' !in email) {
+        return "ErrorNot'@'"
+    }
+
+    if ('.' !in email) {
+        return "ErrorNot'.'"
+    }
+
+    if (email.count { it == '@' } > 1) {
+        return "TheErrorIsALotOf'@'"
+    }
+
+    if (email.count { it == '.' } > 1) {
+        return "TheErrorIsALotOf'.'"
+    }
+
+    val emailStep1 = email.split('@')
+    val emailStep2 = emailStep1[1].split('.')
+    val emailStep3 = arrayOf(emailStep1[0], emailStep2[0], emailStep2[1])
+
+    fun String.onlyLetters() = all { it.isLetter() }
+
+    for (item in emailStep3) {
+        if (!item.onlyLetters()) {
+            return "Error${item}"
+        }
+    }
+
+    return email
 }
 
 fun executingCommands(command: List<String>): Array<String> {
@@ -54,8 +88,6 @@ fun executingCommands(command: List<String>): Array<String> {
 fun main() {
     do {
         val arrayCommands = executingCommands(inputData())
-        println(arrayCommands.joinToString())
-        println(arrayCommands::class.simpleName)
         println(arrayCommands[1])
     } while (arrayCommands[0] != "exit")
 }
